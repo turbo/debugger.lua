@@ -1,4 +1,4 @@
-local tests = require("test_util")
+local tests = require("test_util") -- Sets up package.path
 local dbg = require("debugger")
 
 local function do_nothing() end

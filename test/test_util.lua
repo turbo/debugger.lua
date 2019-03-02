@@ -9,6 +9,7 @@ COLOR_RESET = string.char(27) .. "[0m"
 local function print_red(str) print(COLOR_RED..str..COLOR_RESET) end
 local function print_green(str) print(COLOR_GREEN..str..COLOR_RESET) end
 
+package.path = "../?.lua"
 local dbg = require("debugger");
 local dbg_read = dbg.read
 local dbg_write = dbg.write
