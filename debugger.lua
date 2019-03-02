@@ -520,7 +520,7 @@ dbg.auto_where = false
 -- Works like error(), but invokes the debugger.
 function dbg.error(err, level)
 	level = level or 1
-	dbg_writeln(COLOR_RED.."Debugger stopped on error:"..COLOR_RESET.."(%s)", pretty(err))
+	dbg_writeln(COLOR_RED.."debugger.lua stopped on "..COLOR_RESET..'error("%s")', pretty(err))
 	dbg(false, level)
 	
 	error(err, level)
@@ -529,29 +529,24 @@ end
 -- Works like assert(), but invokes the debugger on a failure.
 function dbg.assert(condition, message)
 	if not condition then
-		dbg_writeln(COLOR_RED.."Debugger stopped on "..COLOR_RESET.."assert(..., %s)", message)
+		dbg_writeln(COLOR_RED.."debugger.lua stopped on "..COLOR_RESET..'assert(..., "%s")', message)
 		dbg(false, 1)
 	end
 	
 	assert(condition, message)
 end
 
--- Works like pcall(), but invokes the debugger on an error.
-function dbg.call(f, ...)
-	return xpcall(f, function(err)
-		dbg_writeln(COLOR_RED.."Debugger stopped on error: "..COLOR_RESET..pretty(err))
-		dbg(false, 1)
-		
-		return err
-	end, ...)
-end
-
--- Error message handler that can be used with lua_pcall().
-function dbg.msgh(...)
-	dbg.write(...)
+-- Error message handler that can be used with xpcall()/lua_pcall().
+function dbg.msgh(err)
+	dbg_writeln(COLOR_RED.."debugger.lua stopped on error: "..COLOR_RESET..pretty(err))
 	dbg(false, 1)
 	
-	return ...
+	return err
+end
+
+-- Works like pcall(), but invokes the debugger on an error.
+function dbg.call(f, ...)
+	return xpcall(f, dbg.msgh, ...)
 end
 
 -- Detect Lua version.
